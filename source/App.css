@@ -2,9 +2,51 @@
 	Put anything you reference with "url()" in ../assets/
 	This way, you can minify your application, and just remove the "source" folder for production
 */
-#app {
-	margin: 16px;
-	border-radius: 4px;
-	background-color: silver;
-	padding: 16px;
+body {
+	color: white;
+	background: #555;
+}
+.panels > * {
+	width: 320px;
+	box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
+}
+.item {
+	position: relative;
+	border-bottom: 1px solid #0E0E0E;
+	padding: 12px 16px;
+	background-color: #333333;
+}
+
+.item.onyx-selected {
+	background-color: MidnightBlue;
+}
+
+.title {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	padding: 12px 0;
+}
+
+.total {
+	position:absolute;
+	right:24px;
+	top:18px;
+}
+
+.center {
+	margin: auto;
+}
+.main {
+	background-color: #333;
+}
+.flickr-image {
+	min-width: 80%;
+	border: solid 5px #CCC;
+	box-shadow: 1px 1px 5px #999;
+}
+
+.flickr-image.tall {
+	min-width: 0;
+	min-height: 80%;
 }
