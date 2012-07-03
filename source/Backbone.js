@@ -1,3 +1,21 @@
+_.mixin({
+	gsub: function (source, pattern, replacement) {
+		var result = '', match, replaced;
+		while (source.length > 0) {
+			if (match = source.match(pattern)) {
+				result += source.slice(0, match.index);
+				replaced = replacement(match);
+				result += replaced == null ? '' : String(replaced);
+				source = source.slice(match.index + match[0].length);
+			} else {
+				result += source;
+				source = '';
+			}
+		}
+		return result;
+	}
+});
+
 function gsub(source, pattern, replacement) {
 	var result = '', match, replaced;
 	while (source.length > 0) {
@@ -7,11 +25,12 @@ function gsub(source, pattern, replacement) {
 			result += replaced == null ? '' : String(replaced);
 			source = source.slice(match.index + match[0].length);
 		} else {
-			result += source, source = '';
+			result += source;
+			source = '';
 		}
 	}
 	return result;
-};
+}
 
 enyo.kind({
 	name: "PageModel",
@@ -26,13 +45,12 @@ enyo.kind({
 			getTotal: function() {
 				var total = 0;
 
-				gsub(this.attributes.content, /[-+]?\d+(\.\d+)?/, function(num) {
+				_.gsub(this.attributes.content, /[-+]?\d+(\.\d+)?/, function(num) {
 					total += parseFloat(num);
 				});
 
 				return total;
 			}
-
 		})
 	}
 });
