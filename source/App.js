@@ -77,7 +77,10 @@ enyo.kind({
 		this.setIndex(0);
 	},
 	doPageChange: function() {
-		this.currentPageModel.set({content: this.$.page.getValue()});
+		enyo.job("updatePageModelContent", enyo.bind(this, function() {
+			this.currentPageModel.set({content: this.$.page.getValue()});
+		}), 500);
+
 	},
 	doContentChange: function() {
 		this.$.total.setContent(this.currentPageModel.getTotal());
