@@ -4,13 +4,15 @@ enyo.kind({
 	classes: "panels enyo-unselectable",
 	realtimeFit: true,
 	arrangerKind: "CollapsingArranger",
+	currentPageModel: null,
+	currentPageIndex: null,
 	components: [
-		{name: "pad", kind: "PadCollection"},
+		{name: "pad", kind: "PadCollection", onContentChange: "doContentChange"},
 		{layoutKind: "FittableRowsLayout", components: [
 			{kind: "onyx.Toolbar", components: [
 				{content: "Test Pad"}
 			]},
-			{kind: "List", fit: true, touch: true, onSetupItem: "setupListItem", components: [
+			{name: "pageList", kind: "List", fit: true, touch: true, onSetupItem: "setupListItem", components: [
 				{name: "item", style: "padding: 10px;", classes: "item enyo-border-box", ontap: "listItemTap", components: [
 					{name: "listItemTitle", classes: "title"},
 					{name: "listItemTotal", classes: "total"}
@@ -26,7 +28,7 @@ enyo.kind({
 				{kind: "onyx.Button", content: "Back", ontap: "showList"}
 			]},
 			{fit: true, style: "position: relative;", components: [
-				{name: "page", kind: "onyx.TextArea", classes: "enyo-fill", placeholder: "Enter text here"}
+				{name: "page", kind: "onyx.TextArea", classes: "enyo-fill", placeholder: "Enter text here", onkeyup: "doPageChange"}
 			]},
 			{kind: "onyx.Toolbar", components: [
 				{name: "total", kind: "onyx.Button", content: "0"}
@@ -36,11 +38,11 @@ enyo.kind({
 	rendered: function() {
 		this.inherited(arguments);
 //		this.search();
-		this.$.list.setCount(this.$.pad.collection.size());
+		this.$.pageList.setCount(this.$.pad.collection.size());
 		if (this.page == 0) {
-			this.$.list.reset();
+			this.$.pageList.reset();
 		} else {
-			this.$.list.refresh();
+			this.$.pageList.refresh();
 		}
 	},
 	reflow: function() {
@@ -63,14 +65,23 @@ enyo.kind({
 			this.setIndex(1);
 		}
 //		this.$.imageSpinner.show();
-		var item = this.$.pad.collection.at(inEvent.index);
-		this.$.page.setValue(item.get("content"));
+		this.currentPageModel = this.$.pad.collection.at(inEvent.index);
+		this.currentPageIndex = inEvent.index;
+		this.$.page.setValue(this.currentPageModel.get("content"));
+		this.$.total.setContent(this.currentPageModel.getTotal());
 //		this.$.flickrImage.hide();
 //		this.$.flickrImage.setSrc(item.original);
 
 	},
 	showList: function() {
 		this.setIndex(0);
+	},
+	doPageChange: function() {
+		this.currentPageModel.set({content: this.$.page.getValue()});
+	},
+	doContentChange: function() {
+		this.$.total.setContent(this.currentPageModel.getTotal());
+		this.$.pageList.renderRow(this.currentPageIndex);
 	}
 });
 

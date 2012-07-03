@@ -16,22 +16,6 @@ _.mixin({
 	}
 });
 
-function gsub(source, pattern, replacement) {
-	var result = '', match, replaced;
-	while (source.length > 0) {
-		if (match = source.match(pattern)) {
-			result += source.slice(0, match.index);
-			replaced = replacement(match);
-			result += replaced == null ? '' : String(replaced);
-			source = source.slice(match.index + match[0].length);
-		} else {
-			result += source;
-			source = '';
-		}
-	}
-	return result;
-}
-
 enyo.kind({
 	name: "PageModel",
 	kind: "Component",
@@ -51,8 +35,9 @@ enyo.kind({
 
 				return total;
 			}
-		})
+		});
 	}
+
 });
 
 enyo.kind({
@@ -81,5 +66,13 @@ enyo.kind({
 				content: "This is a test 7 8 9"
 			}
 		]);
-	}
+		this.collection.on("change:content", this.contentChanged, this);
+		this.collection.on("change:title", this.titleChanged, this);
+	},
+		contentChanged: function() {
+			this.bubble("onContentChange");
+		},
+		titleChanged: function() {
+			this.bubble("onTitleChange");
+		}
 });
