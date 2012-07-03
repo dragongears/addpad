@@ -17,8 +17,19 @@ _.mixin({
 });
 
 enyo.kind({
-	name: "PageModel",
+	name: "EnyoBackbone",
 	kind: "Component",
+	create: function() {
+		this.inherited(arguments);
+	},
+	translateEvent: function(evtin, evtout) {
+		this.collection.on(evtin, enyo.bind(this, function() {this.bubble(evtout);}));
+	}
+});
+
+enyo.kind({
+	name: "PageModel",
+	kind: "EnyoBackbone",
 	create: function() {
 		this.inherited(arguments);
 		this.model = Backbone.Model.extend({
@@ -42,7 +53,7 @@ enyo.kind({
 
 enyo.kind({
 	name: "PadCollection",
-	kind: "Component",
+	kind: "EnyoBackbone",
 	components: [
 		{name: "pm", kind: "PageModel"}
 	],
@@ -66,13 +77,7 @@ enyo.kind({
 				content: "This is a test 7 8 9"
 			}
 		]);
-		this.collection.on("change:content", this.contentChanged, this);
-		this.collection.on("change:title", this.titleChanged, this);
-	},
-		contentChanged: function() {
-			this.bubble("onContentChange");
-		},
-		titleChanged: function() {
-			this.bubble("onTitleChange");
-		}
+		this.translateEvent("change:content", "onContentChange");
+		this.translateEvent("change:title", "onTitleChange");
+	}
 });
