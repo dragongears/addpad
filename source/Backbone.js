@@ -23,7 +23,10 @@ enyo.kind({
 		this.inherited(arguments);
 	},
 	translateEvent: function(evtin, evtout) {
-		this.collection.on(evtin, enyo.bind(this, function() {this.bubble(evtout);}));
+		this.collection.on(evtin, enyo.bind(this, function() {
+			var args = arguments;
+			this.bubble(evtout, args);
+		}));
 	}
 });
 
@@ -79,5 +82,6 @@ enyo.kind({
 		]);
 		this.translateEvent("change:content", "onContentChange");
 		this.translateEvent("change:title", "onTitleChange");
+		this.translateEvent("add", "onAddPage");
 	}
 });

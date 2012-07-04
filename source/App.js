@@ -7,7 +7,7 @@ enyo.kind({
 	currentPageModel: null,
 	currentPageIndex: null,
 	components: [
-		{name: "pad", kind: "PadCollection", onContentChange: "doContentChange"},
+		{name: "pad", kind: "PadCollection", onContentChange: "doContentChange", onAddPage: "doAddPage"},
 		{layoutKind: "FittableRowsLayout", components: [
 			{kind: "onyx.Toolbar", components: [
 				{content: "Test Pad"}
@@ -19,7 +19,7 @@ enyo.kind({
 				]}
 			]},
 			{kind: "onyx.Toolbar", components: [
-				{name: "addPage", kind: "onyx.Button", content: "New page"}
+				{name: "addPage", kind: "onyx.Button", content: "New page", onclick: "doAddPageClick"}
 			]}
 
 		]},
@@ -38,11 +38,7 @@ enyo.kind({
 	rendered: function() {
 		this.inherited(arguments);
 		this.$.pageList.setCount(this.$.pad.collection.size());
-		if (this.page == 0) {
-			this.$.pageList.reset();
-		} else {
-			this.$.pageList.refresh();
-		}
+		this.$.pageList.refresh();
 	},
 	reflow: function() {
 		this.inherited(arguments);
@@ -60,13 +56,25 @@ enyo.kind({
 		this.$.listItemTotal.setContent(item.getTotal());
 	},
 	listItemTap: function(inSender, inEvent) {
-		if (enyo.Panels.isScreenNarrow()) {
-			this.setIndex(1);
-		}
-		this.currentPageModel = this.$.pad.collection.at(inEvent.index);
-		this.currentPageIndex = inEvent.index;
+		this.selectListItem(inEvent.index);
+	},
+	selectListItem: function(index) {
+		this.currentPageModel = this.$.pad.collection.at(index);
+		this.currentPageIndex = index;
 		this.$.page.setValue(this.currentPageModel.get("content"));
 		this.$.total.setContent(this.currentPageModel.getTotal());
+		this.$.page.focus();
+		var el = this.$.page.hasNode();
+		if (el) {
+			if (typeof el.selectionStart == "number") {
+				el.selectionStart = el.selectionEnd = el.value.length;
+			} else if (typeof el.createTextRange != "undefined") {
+				el.focus();
+				var range = el.createTextRange();
+				range.collapse(false);
+				range.select();
+			}
+		}
 	},
 	showList: function() {
 		this.setIndex(0);
@@ -79,6 +87,17 @@ enyo.kind({
 	doContentChange: function() {
 		this.$.total.setContent(this.currentPageModel.getTotal());
 		this.$.pageList.renderRow(this.currentPageIndex);
+	},
+	doAddPageClick: function() {
+		this.$.pad.collection.add({title: "New Untitled", content: "New content"});
+	},
+	doAddPage: function(inSender, inEvent) {
+		console.log(">>>> Add page " + inEvent[2].index);
+		this.$.pageList.setCount(this.$.pad.collection.size());
+		this.$.pageList.refresh();
+		this.$.pageList.scrollToRow(inEvent[2].index);
+		this.$.pageList.select(inEvent[2].index, true);
+		this.selectListItem(inEvent[2].index);
 	}
 });
 
