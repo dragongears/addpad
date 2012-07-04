@@ -19,7 +19,7 @@ enyo.kind({
 				]}
 			]},
 			{kind: "onyx.Toolbar", components: [
-				{name: "addPage", kind: "onyx.Button", content: "Add page"}
+				{name: "addPage", kind: "onyx.Button", content: "New page"}
 			]}
 
 		]},
@@ -37,7 +37,6 @@ enyo.kind({
 	],
 	rendered: function() {
 		this.inherited(arguments);
-//		this.search();
 		this.$.pageList.setCount(this.$.pad.collection.size());
 		if (this.page == 0) {
 			this.$.pageList.reset();
@@ -64,14 +63,10 @@ enyo.kind({
 		if (enyo.Panels.isScreenNarrow()) {
 			this.setIndex(1);
 		}
-//		this.$.imageSpinner.show();
 		this.currentPageModel = this.$.pad.collection.at(inEvent.index);
 		this.currentPageIndex = inEvent.index;
 		this.$.page.setValue(this.currentPageModel.get("content"));
 		this.$.total.setContent(this.currentPageModel.getTotal());
-//		this.$.flickrImage.hide();
-//		this.$.flickrImage.setSrc(item.original);
-
 	},
 	showList: function() {
 		this.setIndex(0);
@@ -80,7 +75,6 @@ enyo.kind({
 		enyo.job("updatePageModelContent", enyo.bind(this, function() {
 			this.currentPageModel.set({content: this.$.page.getValue()});
 		}), 500);
-
 	},
 	doContentChange: function() {
 		this.$.total.setContent(this.currentPageModel.getTotal());
