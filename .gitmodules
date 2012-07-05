@@ -1,9 +1,0 @@
-[submodule "enyo"]
-	path = enyo
-	url = https://github.com/dragongears/enyo.git
-[submodule "lib/onyx"]
-	path = lib/onyx
-	url = https://github.com/dragongears/onyx.git
-[submodule "lib/layout"]
-	path = lib/layout
-	url = https://github.com/dragongears/layout.git
