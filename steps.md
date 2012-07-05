@@ -16,4 +16,3 @@ deploy - create minified app in folder with only necessary files
 
 copy javascript and css from flickr example app
 (list and main view)
-
