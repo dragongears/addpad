@@ -1,6 +1,8 @@
 install git and node.js
 
 download and unzip bootplate from github
+https://github.com/enyojs/bootplate
+
 create project git repository
 git submodule add enyo, lib/layout and lib/onyx (delete empty folders first)
 add project files to git repository

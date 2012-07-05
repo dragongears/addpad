@@ -17,22 +17,23 @@ _.mixin({
 });
 
 enyo.kind({
-	name: "EnyoBackbone",
+	name: "enyo.Backbone",
 	kind: "Component",
 	create: function() {
 		this.inherited(arguments);
 	},
-	translateEvent: function(evtin, evtout) {
-		this.collection.on(evtin, enyo.bind(this, function() {
-			var args = arguments;
-			this.bubble(evtout, args);
-		}));
+	statics: {
+		translateEvent: function(ctl, evtin, evtout) {
+			ctl.collection.on(evtin, enyo.bind(ctl, function() {
+				ctl.bubble(evtout, arguments);
+			}));
+		}
 	}
 });
 
 enyo.kind({
 	name: "PageModel",
-	kind: "EnyoBackbone",
+	kind: "enyo.Backbone",
 	create: function() {
 		this.inherited(arguments);
 		this.model = Backbone.Model.extend({
@@ -48,6 +49,24 @@ enyo.kind({
 				});
 
 				return total;
+			},
+			getTitle: function() {
+				var show = this.attributes.title;
+				var content = this.attributes.content;
+
+				if (show == "") {
+					var len = content.indexOf('\n');
+					if (len !== 0 && content.length !== 0) {
+						if (len == -1 || len > 60) {
+							len = 59;
+						}
+						show = content.substr(0, len);
+					} else {
+						show = '<<Untitled>>';
+					}
+				}
+
+				return show;
 			}
 		});
 	}
@@ -56,7 +75,7 @@ enyo.kind({
 
 enyo.kind({
 	name: "PadCollection",
-	kind: "EnyoBackbone",
+	kind: "enyo.Backbone",
 	components: [
 		{name: "pm", kind: "PageModel"}
 	],
@@ -80,8 +99,8 @@ enyo.kind({
 				content: "This is a test 7 8 9"
 			}
 		]);
-		this.translateEvent("change:content", "onContentChange");
-		this.translateEvent("change:title", "onTitleChange");
-		this.translateEvent("add", "onAddPage");
+		enyo.Backbone.translateEvent(this, "change:content", "onContentChange");
+		enyo.Backbone.translateEvent(this, "change:title", "onTitleChange");
+		enyo.Backbone.translateEvent(this, "add", "onAddPage");
 	}
 });

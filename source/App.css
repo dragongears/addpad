@@ -22,16 +22,19 @@ body {
 }
 
 .title {
+	display: inline-block;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	padding: 12px 0;
+	max-width:240px;
 }
 
 .total {
+	display: inline-block;
 	position:absolute;
 	right:24px;
-	top:18px;
+	top:22px;
 }
 
 .center {

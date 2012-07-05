@@ -1,3 +1,11 @@
+// DOIT: Delete pages
+// DOIT: Edit page details
+// DOIT: Persistence
+// DOIT: Page details dialog
+// - Color
+// - Title
+// - Units
+
 enyo.kind({
 	name: "App",
 	kind: "Panels",
@@ -31,7 +39,9 @@ enyo.kind({
 				{name: "page", kind: "onyx.TextArea", classes: "enyo-fill", placeholder: "Enter text here", onkeyup: "doPageChange"}
 			]},
 			{kind: "onyx.Toolbar", components: [
-				{name: "total", kind: "onyx.Button", content: "0"}
+				{name: "delete", kind: "onyx.Button", content: "Delete"},
+				{name: "edit", kind: "onyx.Button", content: "Details"},
+				{name: "total", kind: "onyx.Button", content: "0", style:"float:right;"}
 			]}
 		]}
 	],
@@ -52,7 +62,7 @@ enyo.kind({
 		var i = inEvent.index;
 		var item = this.$.pad.collection.at(i);
 		this.$.item.addRemoveClass("onyx-selected", inSender.isSelected(inEvent.index));
-		this.$.listItemTitle.setContent(item.get("title") || "Untitled");
+		this.$.listItemTitle.setContent(item.getTitle());
 		this.$.listItemTotal.setContent(item.getTotal());
 	},
 	listItemTap: function(inSender, inEvent) {
@@ -89,7 +99,7 @@ enyo.kind({
 		this.$.pageList.renderRow(this.currentPageIndex);
 	},
 	doAddPageClick: function() {
-		this.$.pad.collection.add({title: "New Untitled", content: "New content"});
+		this.$.pad.collection.add({title: "", content: ""});
 	},
 	doAddPage: function(inSender, inEvent) {
 		console.log(">>>> Add page " + inEvent[2].index);
