@@ -83,22 +83,11 @@ enyo.kind({
 		this.inherited(arguments);
 		var pageModel = this.$.pm.model;
 		var pc = Backbone.Collection.extend({
-				  model: pageModel
+				  model: pageModel,
+					localStorage: new Store("addpad")
 				});
-		this.collection = new pc([
-			{
-				title: "Test item 1",
-				content: "This is a test 1 2 3"
-			},
-			{
-				title: "Test item 2",
-				content: "This is a test 4 5 6"
-			},
-			{
-				title: "Test item 3",
-				content: "This is a test 7 8 9"
-			}
-		]);
+		this.collection = new pc();
+
 		enyo.Backbone.translateEvent(this, "change:content", "onContentChange");
 		enyo.Backbone.translateEvent(this, "change:title", "onTitleChange");
 		enyo.Backbone.translateEvent(this, "add", "onAddPage");
