@@ -43,13 +43,3 @@ body {
 .main {
 	background-color: #333;
 }
-.flickr-image {
-	min-width: 80%;
-	border: solid 5px #CCC;
-	box-shadow: 1px 1px 5px #999;
-}
-
-.flickr-image.tall {
-	min-width: 0;
-	min-height: 80%;
-}

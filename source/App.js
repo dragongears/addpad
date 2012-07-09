@@ -9,14 +9,14 @@
 enyo.kind({
 	name: "App",
 	kind: "Panels",
-	classes: "panels enyo-unselectable",
+	classes: "app panels enyo-unselectable",
 	realtimeFit: true,
 	arrangerKind: "CollapsingArranger",
 	currentPageModel: null,
 	currentPageIndex: null,
 	components: [
 		{name: "pad", kind: "PadCollection", onContentChange: "doContentChange", onAddPage: "doAddPage"},
-		{layoutKind: "FittableRowsLayout", components: [
+		{Kind: "FittableRows", components: [
 			{kind: "onyx.Toolbar", components: [
 				{content: "Test Pad"}
 			]},
@@ -29,40 +29,33 @@ enyo.kind({
 			{kind: "onyx.Toolbar", components: [
 				{name: "addPage", kind: "onyx.Button", content: "New page", onclick: "doAddPageClick"}
 			]}
-
 		]},
 		{name: "pageView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
-			{name: "backToolbar", kind: "onyx.Toolbar", showing: false, components: [
-				{kind: "onyx.Button", content: "Back", ontap: "showList"}
-			]},
 			{fit: true, style: "position: relative;", components: [
 				{name: "page", kind: "onyx.TextArea", classes: "enyo-fill", placeholder: "Enter text here", onkeyup: "doPageChange"}
 			]},
-			{kind: "onyx.Toolbar", components: [
-				{name: "delete", kind: "onyx.Button", content: "Delete", onclick: "doDeletePageClick"},
-				{name: "edit", kind: "onyx.Button", content: "Details"},
-				{name: "total", content: "0", style:"float:right;"}
+			{kind: "FittableColumns", noStretch: true, classes: "onyx-toolbar onyx-toolbar-inline", components: [
+				{kind: "onyx.Grabber"},
+				{kind: "Scroller", thumb: false, fit: true, touch: true, vertical: "hidden", style: "margin: 0;", components: [
+					{classes: "onyx-toolbar-inline", style: "white-space: nowrap;", components: [
+						{name: "total", content: "0"},
+						{name: "edit", kind: "onyx.Button", content: "Details", style:"float:right;"},
+						{name: "delete", kind: "onyx.Button", content: "Delete", onclick: "doDeletePageClick", style:"float:right;"}
+					]}
+				]}
 			]}
+
 		]}
 	],
 	create: function() {
 		this.inherited(arguments);
 		this.$.pad.collection.fetch();
-		enyo.log(JSON.stringify(this.$.pad.collection));
+		this.$.pageList.setCount(this.$.pad.collection.size());
 	},
 	rendered: function() {
 		this.inherited(arguments);
-		this.$.pageList.setCount(this.$.pad.collection.size());
-		this.$.pageList.refresh();
+		//this.$.pageList.refresh();
 		this.showPage();
-	},
-	reflow: function() {
-		this.inherited(arguments);
-		var backShowing = this.$.backToolbar.showing;
-		this.$.backToolbar.setShowing(enyo.Panels.isScreenNarrow());
-		if (this.$.backToolbar.showing != backShowing) {
-			this.$.pageView.resized();
-		}
 	},
 	setupListItem: function(inSender, inEvent) {
 		var i = inEvent.index;
@@ -80,7 +73,6 @@ enyo.kind({
 		this.showPage();
 	},
 	showPage: function() {
-		console.log(">>>>>>>> " + JSON.stringify(this.$.pageList.getSelection().getSelected()));
 		if (this.currentPageIndex === null) {
 			this.$.page.setValue("Select a page or add a new page.");
 			this.$.page.setDisabled(true);
@@ -92,7 +84,10 @@ enyo.kind({
 			this.$.edit.setDisabled(false);
 			this.$.page.setValue(this.currentPageModel.get("content"));
 			this.$.total.setContent(this.currentPageModel.getTotal());
-			this.$.page.focus();
+			if (enyo.Panels.isScreenNarrow()) {
+				this.setIndex(1);
+			}
+//			this.$.page.focus();
 			// move cursor to end
 			var el = this.$.page.hasNode();
 			if (el) {
