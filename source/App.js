@@ -16,29 +16,32 @@ enyo.kind({
 	currentPageIndex: null,
 	components: [
 		{name: "pad", kind: "PadCollection", onContentChange: "doContentChange", onAddPage: "doAddPage"},
-		{Kind: "FittableRows", components: [
+		{kind: "FittableRows", classes: "left", components: [
 			{kind: "onyx.Toolbar", components: [
 				{content: "Test Pad"}
 			]},
 			{name: "pageList", kind: "List", fit: true, touch: true, onSetupItem: "setupListItem", components: [
-				{name: "item", style: "padding: 10px;", classes: "item enyo-border-box", ontap: "listItemTap", components: [
+				{name: "item", style:"font-size:20px;", classes: "item enyo-border-box", ontap: "listItemTap", components: [
 					{name: "listItemTitle", classes: "title"},
 					{name: "listItemTotal", classes: "total"}
 				]}
 			]},
-			{kind: "onyx.Toolbar", components: [
-				{name: "addPage", kind: "onyx.Button", content: "New page", onclick: "doAddPageClick"}
-			]}
+				{kind: "onyx.Toolbar", components: [
+					{name: "addPage", kind: "onyx.Button", content: "New page", onclick: "doAddPageClick"}
+				]}
 		]},
 		{name: "pageView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
 			{fit: true, style: "position: relative;", components: [
-				{name: "page", kind: "onyx.TextArea", classes: "enyo-fill", placeholder: "Enter text here", onkeyup: "doPageChange"}
+				{name: "page", kind: "onyx.TextArea", style:"font-size:20px;", classes: "enyo-fill", placeholder: "Enter text here", onkeyup: "doPageChange"}
 			]},
 			{kind: "FittableColumns", noStretch: true, classes: "onyx-toolbar onyx-toolbar-inline", components: [
 				{kind: "onyx.Grabber"},
 				{kind: "Scroller", thumb: false, fit: true, touch: true, vertical: "hidden", style: "margin: 0;", components: [
 					{classes: "onyx-toolbar-inline", style: "white-space: nowrap;", components: [
-						{name: "total", content: "0"},
+						{kind: "FittableColumns", name: "totalDisplay", style:"font-size:20px;", components:[
+							{content: "Total:"},
+							{name: "total", style: "margin-left:12px", content: "0"}
+						]},
 						{name: "edit", kind: "onyx.Button", content: "Details", style:"float:right;"},
 						{name: "delete", kind: "onyx.Button", content: "Delete", onclick: "doDeletePageClick", style:"float:right;"}
 					]}
@@ -54,7 +57,6 @@ enyo.kind({
 	},
 	rendered: function() {
 		this.inherited(arguments);
-		//this.$.pageList.refresh();
 		this.showPage();
 	},
 	setupListItem: function(inSender, inEvent) {
@@ -120,7 +122,6 @@ enyo.kind({
 		this.$.pad.collection.at(this.currentPageIndex).save();
 	},
 	doAddPage: function(inSender, inEvent) {
-		console.log(">>>> Add page " + inEvent[2].index);
 		this.$.pageList.setCount(this.$.pad.collection.size());
 		this.$.pageList.refresh();
 		this.$.pageList.scrollToRow(inEvent[2].index);
