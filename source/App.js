@@ -8,46 +8,44 @@
 
 enyo.kind({
 	name: "App",
-	kind: "Panels",
-	classes: "app panels enyo-unselectable",
-	realtimeFit: true,
-	arrangerKind: "CollapsingArranger",
+	classes: "app onyx font-lato enyo-unselectable",
 	currentPageModel: null,
 	currentPageIndex: null,
 	components: [
 		{name: "pad", kind: "PadCollection", onContentChange: "doContentChange", onAddPage: "doAddPage"},
-		{kind: "FittableRows", classes: "left", components: [
-			{kind: "onyx.Toolbar", components: [
-				{content: "Test Pad"}
-			]},
-			{name: "pageList", kind: "List", fit: true, touch: true, onSetupItem: "setupListItem", components: [
-				{name: "item", style:"font-size:20px;", classes: "item enyo-border-box", ontap: "listItemTap", components: [
-					{name: "listItemTitle", classes: "title"},
-					{name: "listItemTotal", classes: "total"}
-				]}
-			]},
+		{kind: "Panels", name:"mainPanels", classes:"panels enyo-fit", arrangerKind: "CollapsingArranger", components: [
+			{kind: "FittableRows", classes: "left", components: [
 				{kind: "onyx.Toolbar", components: [
-					{name: "addPage", kind: "onyx.Button", content: "New page", onclick: "doAddPageClick"}
-				]}
-		]},
-		{name: "pageView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
-			{fit: true, style: "position: relative;", components: [
-				{name: "page", kind: "onyx.TextArea", style:"font-size:20px;", classes: "enyo-fill", placeholder: "Enter text here", onkeyup: "doPageChange"}
+					{content: "Test Pad"}
+				]},
+				{name: "pageList", kind: "List", fit: true, touch: true, onSetupItem: "setupListItem", components: [
+					{name: "item", style:"font-size:20px;", classes: "item enyo-border-box", ontap: "listItemTap", components: [
+						{name: "listItemTitle", classes: "title"},
+						{name: "listItemTotal", classes: "total"}
+					]}
+				]},
+					{kind: "onyx.Toolbar", components: [
+						{name: "addPage", kind: "onyx.IconButton", src: "assets/toolbar-icon-new2.png", onclick: "doAddPageClick"}
+					]}
 			]},
-			{kind: "FittableColumns", noStretch: true, classes: "onyx-toolbar onyx-toolbar-inline", components: [
-				{kind: "onyx.Grabber"},
-				{kind: "Scroller", thumb: false, fit: true, touch: true, vertical: "hidden", style: "margin: 0;", components: [
-					{classes: "onyx-toolbar-inline", style: "white-space: nowrap;", components: [
-						{kind: "FittableColumns", name: "totalDisplay", style:"font-size:20px;", components:[
-							{content: "Total:"},
-							{name: "total", style: "margin-left:12px", content: "0"}
-						]},
-						{name: "edit", kind: "onyx.Button", content: "Details", style:"float:right;"},
-						{name: "delete", kind: "onyx.Button", content: "Delete", onclick: "doDeletePageClick", style:"float:right;"}
+			{name: "pageView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
+				{fit: true, style: "position: relative;", components: [
+					{name: "page", kind: "onyx.TextArea", style:"font-size:20px;", classes: "enyo-fill", placeholder: "Enter text here", onkeyup: "doPageChange"}
+				]},
+				{kind: "FittableColumns", noStretch: true, classes: "onyx-toolbar onyx-toolbar-inline", components: [
+					{kind: "onyx.Grabber"},
+					{kind: "Scroller", thumb: false, fit: true, touch: true, vertical: "hidden", style: "margin: 0;", components: [
+						{classes: "onyx-toolbar-inline", style: "white-space: nowrap;", components: [
+							{kind: "FittableColumns", name: "totalDisplay", style:"font-size:20px;", components:[
+								{content: "Total:"},
+								{name: "total", style: "margin-left:12px", content: "0"}
+							]},
+							{name: "edit", kind: "onyx.IconButton", src: "assets/icon-info4.png", style:"float:right;margin-left:48px;"},
+							{name: "delete", kind: "onyx.IconButton", src: "assets/toolbar-icon-delete2.png", onclick: "doDeletePageClick", style:"float:right;"}
+						]}
 					]}
 				]}
 			]}
-
 		]}
 	],
 	create: function() {
@@ -78,12 +76,12 @@ enyo.kind({
 		if (this.currentPageIndex === null) {
 			this.$.page.setValue("Select a page or add a new page.");
 			this.$.page.setDisabled(true);
-			this.$.delete.setDisabled(true);
-			this.$.edit.setDisabled(true);
+			//this.$.delete.setDisabled(true);
+			//this.$.edit.setDisabled(true);
 		} else {
 			this.$.page.setDisabled(false);
-			this.$.delete.setDisabled(false);
-			this.$.edit.setDisabled(false);
+			//this.$.delete.setDisabled(false);
+			//this.$.edit.setDisabled(false);
 			this.$.page.setValue(this.currentPageModel.get("content"));
 			this.$.total.setContent(this.currentPageModel.getTotal());
 			if (enyo.Panels.isScreenNarrow()) {
@@ -141,6 +139,3 @@ enyo.kind({
 		this.showPage();
 	}
 });
-
-new App({fit: true}).write();
-
