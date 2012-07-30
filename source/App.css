@@ -44,3 +44,21 @@ body {
 .main {
 	background-color: #333;
 }
+
+.popup-inside > * {
+	display:block;
+	width:240px;
+	margin-bottom: 6px;
+}
+
+.popup-inside > *:last-child {
+	margin-bottom: 0;
+}
+
+.popup-inside {
+	border: 1px solid rgba(0,0,0,0.2);
+	border-radius: 4px;
+	padding: 12px;
+	background: #EAEAEA;
+}
+

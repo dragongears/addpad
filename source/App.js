@@ -25,7 +25,7 @@ enyo.kind({
 					]}
 				]},
 					{kind: "onyx.Toolbar", components: [
-						{name: "addPage", kind: "onyx.IconButton", src: "assets/toolbar-icon-new2.png", onclick: "doAddPageClick"}
+						{name: "addPage", kind: "onyx.IconButton", src: "assets/toolbar-icon-new.png", onclick: "doAddPageClick"}
 					]}
 			]},
 			{name: "pageView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
@@ -40,11 +40,22 @@ enyo.kind({
 								{content: "Total:"},
 								{name: "total", style: "margin-left:12px", content: "0"}
 							]},
-							{name: "edit", kind: "onyx.IconButton", src: "assets/icon-info4.png", style:"float:right;margin-left:48px;"},
-							{name: "delete", kind: "onyx.IconButton", src: "assets/toolbar-icon-delete2.png", onclick: "doDeletePageClick", style:"float:right;"}
+							{name: "edit", kind: "onyx.IconButton", src: "assets/icon-info.png", style:"float:right", onclick: "showPopup"}
 						]}
 					]}
 				]}
+			]}
+		]},
+		{name: "infoPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, onShow: "setupPopbox", onHide: "savePopbox", components: [
+			{classes: "popup-inside", components: [
+				{kind: "onyx.Groupbox", components: [
+					{kind: "onyx.GroupboxHeader", content: "List as..."},
+					{kind: "onyx.InputDecorator", components: [
+						{name: "popboxTitle", kind: "onyx.Input", style: "width: 100%", placeholder: "Enter text or use first line of page"}
+					]}
+				]},
+				{kind: "onyx.Button", classes: "onyx-negative popup-item", content: "Delete", onclick: "doDeletePageClick"},
+				{kind: "onyx.Button", classes: "popup-item",content: "Done", onclick: "hidePopup"}
 			]}
 		]}
 	],
@@ -56,6 +67,22 @@ enyo.kind({
 	rendered: function() {
 		this.inherited(arguments);
 		this.showPage();
+	},
+	showPopup: function(inSender) {
+		if (this.currentPageIndex !== null) {
+			this.$.infoPopup.show();
+		}
+	},
+	hidePopup: function(inSender) {
+			this.$.infoPopup.hide();
+	},
+	setupPopbox: function(inSender) {
+		this.$.popboxTitle.setValue(this.currentPageModel.get("title"));
+	},
+	savePopbox: function(inSender) {
+		this.currentPageModel.set({title: this.$.popboxTitle.getValue()});
+		this.currentPageModel.save();
+		this.$.pageList.renderRow(this.currentPageIndex);
 	},
 	setupListItem: function(inSender, inEvent) {
 		var i = inEvent.index;
@@ -127,6 +154,7 @@ enyo.kind({
 		this.selectListItem(inEvent[2].index);
 	},
 	doDeletePageClick: function() {
+		this.hidePopup();
 		var collection = this.$.pad.collection;
 		var model = collection.at(this.currentPageIndex);
 		model.destroy();
