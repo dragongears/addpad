@@ -19,12 +19,12 @@ _.mixin({
 enyo.kind({
 	name: "enyo.Backbone",
 	kind: "Component",
-	create: function() {
+	create: function () {
 		this.inherited(arguments);
 	},
 	statics: {
-		translateEvent: function(ctl, evtin, evtout) {
-			ctl.collection.on(evtin, enyo.bind(ctl, function() {
+		translateEvent: function (ctl, evtin, evtout) {
+			ctl.collection.on(evtin, enyo.bind(ctl, function () {
 				ctl.bubble(evtout, arguments);
 			}));
 		}
@@ -34,23 +34,23 @@ enyo.kind({
 enyo.kind({
 	name: "PageModel",
 	kind: "enyo.Backbone",
-	create: function() {
+	create: function () {
 		this.inherited(arguments);
 		this.model = Backbone.Model.extend({
 			defaults: {
 				title: "",
 				content: ""
 			},
-			getTotal: function() {
+			getTotal: function () {
 				var total = 0;
 
-				_.gsub(this.attributes.content, /[-+]?\d+(\.\d+)?/, function(num) {
+				_.gsub(this.attributes.content, /[-+]?\d+(\.\d+)?/, function (num) {
 					total += parseFloat(num);
 				});
 
 				return total;
 			},
-			getTitle: function() {
+			getTitle: function () {
 				var show = this.attributes.title;
 				var content = this.attributes.content;
 
@@ -79,13 +79,13 @@ enyo.kind({
 	components: [
 		{name: "pm", kind: "PageModel"}
 	],
-	create: function() {
+	create: function () {
 		this.inherited(arguments);
 		var pageModel = this.$.pm.model;
 		var pc = Backbone.Collection.extend({
-				  model: pageModel,
-					localStorage: new Store("addpad")
-				});
+			model: pageModel,
+			localStorage: new Store("addpad")
+		});
 		this.collection = new pc();
 
 		enyo.Backbone.translateEvent(this, "change:content", "onContentChange");
